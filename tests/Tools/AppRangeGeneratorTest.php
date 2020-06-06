@@ -17,4 +17,14 @@ class AppRangeGeneratorTest extends TestCase
         //var_dump($result_func);
         $this->assertIsArray($result_func);
     }
+
+    public function testInverseRange()
+    {
+        //fail
+        $array = ['x','A'];
+        $run_func = new AppRangeGenerator();
+        $result_func = $run_func->makeRange($array);
+        //var_dump($result_func);
+        $this->assertIsBool($result_func);
+    }
 }

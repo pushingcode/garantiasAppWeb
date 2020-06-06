@@ -49,9 +49,6 @@ class AppRangeGenerator
                 'Codigo'        => $e->getCode()
             ];*/
             $arrayFinal = false;
-            //AppLogServices::logEvent(__FUNCTION__,$e->getMessage(),[],$e->getCode());
-            $logger = new LoggerInterface;
-            $logger->error($e->getMessage(),["CONTEXTO"=>__FUNCTION__]);
         }
         
         return $arrayFinal;
