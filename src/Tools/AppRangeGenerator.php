@@ -3,8 +3,7 @@
 declare(strict_types = 1);
 
 namespace App\Tools;
-
-use Psr\Log\LoggerInterface;
+use App\Tools\AppLogServices;
 
 /**
  * Genera un Arreglo a partir de una matriz
@@ -12,7 +11,7 @@ use Psr\Log\LoggerInterface;
  * @author  Carlos Guillen <code_dev@zoho.com>
  * @version Revision: 1.1.2
  * @access public
- * @since PHP 7.3.5
+ * @since s7.3.5
  * 
  * @method array makeRange(array)
  * @method array iterador(array)
@@ -22,6 +21,7 @@ use Psr\Log\LoggerInterface;
  */
 class AppRangeGenerator
 {
+
     /**
      * Crea un arreglo con rango alfabetico a partir de un arreglo [AA,XX]
      * @Throwable
@@ -31,8 +31,9 @@ class AppRangeGenerator
      * @return mixed
      * @since 7.3.5
      */
-    public static function makeRange(array $a)
+    public function makeRange(array $a): ?array
     {
+        $arrayFinal = null;
         //generamos atributos las partes del arreglo
         foreach ($a as $attrib) {
             $array[] = self::stringToArray($attrib);
@@ -44,11 +45,7 @@ class AppRangeGenerator
             $arrayFinal = self::iterador($array);
 
         } catch (\Exception $e) {
-            /*$arrayFinal = [
-                'Excepcion: '   => $e->getMessage(),
-                'Codigo'        => $e->getCode()
-            ];*/
-            $arrayFinal = false;
+            AppLogServices::servicesLog($e->getCode(),$e->getMessage(),["Class"=>__METHOD__,"Method"=>__FUNCTION__]);
         }
         
         return $arrayFinal;
@@ -202,7 +199,7 @@ class AppRangeGenerator
         $salida = true;
         if ($array[0]["strength"] >= $array[1]["strength"]) {
            
-            throw new \Exception("Error, se genera un flujo inverso", 200);
+            throw new \Exception("Error, se genera un flujo inverso", 400);
             $salida = false;
 
         }
