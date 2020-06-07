@@ -9,6 +9,7 @@ use App\Tools\AppRangeGenerator;
 
 class AppRangeGeneratorTest extends TestCase
 {
+
     public function testRange()
     {
         $array = ['A','AA'];
@@ -25,6 +26,6 @@ class AppRangeGeneratorTest extends TestCase
         $run_func = new AppRangeGenerator();
         $result_func = $run_func->makeRange($array);
         //var_dump($result_func);
-        $this->assertIsBool($result_func);
+        $this->assertNull($result_func);
     }
 }
