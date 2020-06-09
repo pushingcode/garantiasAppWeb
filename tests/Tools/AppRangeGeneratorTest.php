@@ -33,7 +33,7 @@ class AppRangeGeneratorTest extends TestCase
     public function testIterador(): void //falla al no iniciar en el valor estipulado
     {
         $memA = AppRangeGenerator::stringToArray('AL');
-        $memB = AppRangeGenerator::stringToArray('AZ');
+        $memB = AppRangeGenerator::stringToArray('BL');
         $array = [$memA,$memB];
         $result_func = AppRangeGenerator::iterador($array);
         var_dump($result_func);
@@ -47,7 +47,7 @@ class AppRangeGeneratorTest extends TestCase
             "txt",
             ["A","D"],
             ["X","AA"],
-            ["AL","AX"]//genera un error de inicio
+            ["AL","BX"]//genera un error de inicio
         ];
 
         $run_func = new AppOfficeFactory();

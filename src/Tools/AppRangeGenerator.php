@@ -101,17 +101,17 @@ class AppRangeGenerator
         if ($arrayD[0]["count"] == 2 && $arrayD[1]["count"] == 2) {
             $iterador = range($arrayD[0]["split"][0], $arrayD[1]["split"][0]);
             //bucle de iteracion
+            $range = self::setRange($arrayD[0]["split"][1]);
             foreach ($iterador as $value) {
                 foreach ($range as $terminal) {
                     if ($value.''.$terminal == $arrayD[1]["raw"]) {
-                        $arrayT[] = $value.''.$terminal;
+                        $array[] = $value.''.$terminal;
                         break;
                     } else {
-                        $arrayT[] = $value.''.$terminal;
+                        $array[] = $value.''.$terminal;
                     }
                 }
             }
-            $array = $arrayT;
         }
 
         return $array;
