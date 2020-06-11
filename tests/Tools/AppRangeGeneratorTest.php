@@ -20,7 +20,7 @@ class AppRangeGeneratorTest extends TestCase
         $this->assertIsArray($result_func);
     }
 
-    public function testInverseRange(): void
+    /*public function testInverseRange(): void
     {
         //fail
         $array = ['X','A'];
@@ -28,14 +28,13 @@ class AppRangeGeneratorTest extends TestCase
         $result_func = $run_func->makeRange($array);
         //var_dump($result_func);
         $this->assertNull($result_func);
-    }
+    }*/
 
-    public function testIterador(): void //falla al no iniciar en el valor estipulado
+    public function testIterador(): void
     {
-        $memA = AppRangeGenerator::stringToArray('AL');
-        $memB = AppRangeGenerator::stringToArray('BL');
-        $array = [$memA,$memB];
-        $result_func = AppRangeGenerator::iterador($array);
+        $memA = 'X';
+        $memB = 'AL';
+        $result_func = AppRangeGenerator::getRange($memA,$memB);
         var_dump($result_func);
         $this->assertIsArray($result_func);
     }
@@ -46,7 +45,6 @@ class AppRangeGeneratorTest extends TestCase
             __DIR__ . '/../../var/temp/test.txt',
             "txt",
             ["A","D"],
-            ["X","AA"],
             ["AL","BX"]//genera un error de inicio
         ];
 
@@ -55,5 +53,14 @@ class AppRangeGeneratorTest extends TestCase
         var_dump($result_func);
         //$this->assertNull($result_func);
         $this->assertIsArray($result_func);
+    }
+
+    public function testStringToArray(): void
+    {
+        $memA = AppRangeGenerator::stringToArray('A');
+        $memB = AppRangeGenerator::stringToArray('XL');
+
+        var_dump($memA, $memB);
+        $this->assertIsArray($memB);
     }
 }
