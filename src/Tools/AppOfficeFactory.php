@@ -59,20 +59,46 @@ class AppOfficeFactory
 
         return $array;
     }
-
+    /**
+     * Registra un tipo de elemnto a partir de una extension dada
+     * 
+     * @param string|null $string           Xls Microsoft Excel™ Binary file format (BIFF5 and BIFF8).
+     *                                      Xml Microsoft Excel™ 2003 included options for a file format called SpreadsheetML.
+     *                                      Xlsx Microsoft Excel™ 2007 shipped with a new file format, namely Microsoft Office Open XML SpreadsheetML, and Excel 2010.
+     *                                      Ods Open Document Format (ODF) or OASIS.
+     *                                      Gnumeric Gnome Gnumeric spreadsheet application.
+     *                                      Csv Comma Separated Value (CSV)
+     *                                      Html HyperText Markup Language (HTML)
+     * @return null|string
+     */
     private static function registerType(string $string = null): ?string
     {
         switch ($string) {
+            case 'xls':
+                $string = 'Xls';
+            break;
+            case 'xml':
+                $string = 'Xml';
+            break;
             case 'xlsx':
                 $string = 'Xlsx';
-                break;
-            case 'txt';
-                $string = 'Txt';
-                break;
+            break;
+            case 'ods';
+                $string = 'Ods';
+            break;
+            case 'gnumeric':
+                $string = 'Gnumeric';
+            break;
+            case 'csv':
+                $string = 'Csv';
+            break;
+            case 'html':
+                $string = 'Html';
+            break;
             
             default:
                 $string = null;
-                break;
+            break;
         }
         return $string;
     }
