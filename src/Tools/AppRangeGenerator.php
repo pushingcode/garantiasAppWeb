@@ -11,12 +11,12 @@ use App\Tools\AppLogServices;
  * @author  Carlos Guillen <code_dev@zoho.com>
  * @version Revision: 1.1.2
  * @access public
- * @since s7.3.5
+ * @since 7.3.5
  * 
  * @method array makeRange(array)
- * @method array iterador(array)
- * @method array stringToArray(string)
- * @method array setRange(string)
+ * @method int alpha2num(string $a) 
+ * @method string num2alpha(int $n)
+ * @method array getRange(string $start_column, string $end_column)
  * @method bool checkRange(array)
  */
 class AppRangeGenerator
@@ -42,81 +42,72 @@ class AppRangeGenerator
         try {
             self::checkRange($array);
             
-            $arrayFinal = self::iterador($array);
+            $array = self::getRange($array[0]['raw'], $array[1]['raw']);
 
         } catch (\Exception $e) {
             AppLogServices::servicesLog($e->getCode(),$e->getMessage(),["Class"=>__METHOD__,"Method"=>__FUNCTION__]);
         }
         
-        return $arrayFinal;
+        return $array;
     }
 
 
     /**
-     * Iterador motor del metodo makeRange
-     * @test
+     * convierte cadenas a numeros
+     * Posted by https://stackoverflow.com/users/2388004/zan-asmon
      * @access public
-     * @param array $array
-     * @return mixed
-     * @since PHP 7.3.5
+     * @param string $a
+     * @return int
+     * @since 7.3.5
      */
-    public static function iterador(array $arrayD)
+    public static function alpha2num(string $a): int
     {
-        /*
-         * Caso de Uso A-? Return true
-         * Caso de Uso ?-?? Return true
-         * Caso de Uso ??-?? Return true
-        */
+        $l = strlen($a);
+        $n = 0;
+        for($i = 0; $i < $l; $i++)
+            $n = $n*26 + ord($a[$i]) - 0x40;
 
-        $range = self::setRange('A');
-
-        //caso de uso A-?
-        if ($arrayD[0]["count"] == 1 && $arrayD[1]["count"] == 1) {
-            $array = range($arrayD[0]["raw"], $arrayD[1]["raw"]);
-        }
-
-        //caso de uso ?-??
-        if ($arrayD[0]["count"] == 1 && $arrayD[1]["count"] == 2) {
-            //creamos el rango de ?-z
-            $array_1 = self::setRange($arrayD[0]["raw"]);
-            //creamos la primera iteracion de A-$array[1]['split'][0]
-            $iterador = range('A', $arrayD[1]["split"][0]);
-            //bucle de iteracion
-            foreach ($iterador as $value) {
-                foreach ($range as $terminal) {
-                    if ($value.''.$terminal == $arrayD[1]["raw"]) {
-                        $array_2[] = $value.''.$terminal;
-                        break;
-                    } else {
-                        $array_2[] = $value.''.$terminal;
-                    }
-                }
-                
-            }
-            //salida
-            $array = array_merge($array_1, $array_2);
-        }
-
-        //caso de uso ??-??
-        if ($arrayD[0]["count"] == 2 && $arrayD[1]["count"] == 2) {
-            $iterador = range($arrayD[0]["split"][0], $arrayD[1]["split"][0]);
-            //bucle de iteracion
-            foreach ($iterador as $value) {
-                foreach ($range as $terminal) {
-                    if ($value.''.$terminal == $arrayD[1]["raw"]) {
-                        $arrayT[] = $value.''.$terminal;
-                        break;
-                    } else {
-                        $arrayT[] = $value.''.$terminal;
-                    }
-                }
-            }
-            $array = $arrayT;
-        }
-
-        return $array;
-
+        return $n-1;
     }
+
+    /**
+     * convierte cadenas a numeros
+     * Posted by https://stackoverflow.com/users/2388004/zan-asmon
+     * @access public
+     * @param int $n
+     * @return string
+     * @since 7.3.5
+     */
+    public static function num2alpha(int $n): string
+    {
+        for($r = ""; $n >= 0; $n = intval($n / 26) - 1)
+        $r = chr($n%26 + 0x41) . $r;
+        return $r;
+    }
+
+    /**
+     * obtiene un arreglo dado desde $start_column hasta $end_column
+     * Posted by https://stackoverflow.com/users/2388004/zan-asmon
+     * @access public
+     * @param string $start_column
+     * @param string $end_column
+     * @return array
+     * @since 7.3.5
+     */
+    public static function getRange($start_column, $end_column): array
+    {
+        $s = self::alpha2num($start_column); // get start number
+        $e = self::alpha2num($end_column); // get end num
+
+        $columns = array();
+
+        // loop from start to end and change back the number to alpha to be stored in array
+        for($i=$s; $i<=$e; $i++)
+            $columns[] = self::num2alpha($i);
+
+        return $columns;
+    }
+
 
     /**
      * Toma una cadena y la transforma en un arreglo
@@ -125,26 +116,21 @@ class AppRangeGenerator
      * @access public
      * @param string $string
      * @return array
-     * @since PHP 7.3.5 
+     * @since 7.3.5 
      */
-    public static function stringToArray(string $string)
+    public static function stringToArray(string $string): array
     {
-        $strength = null;
         $array = str_split($string);
-        
+        $count = count($array);
         foreach ($array as $value) {
-            $strength .= array_search($value, range('A','Z')) + 1;
+            $n_assci[] = ord($value) - 65;
         }
-        
-        if (count($array) == 2) {
-            $strength = $strength * count($array) + 5;
-        }
- 
+            
         $array = [
-            "strength"      => (int) $strength,
+            "strength"      => (int) array_sum($n_assci),
             "raw"           => $string,
             "split"         => $array,
-            "count"         => count($array)
+            "count"         => $count
         ];
 
         return $array;
@@ -157,7 +143,7 @@ class AppRangeGenerator
      * @access public
      * @param string $string
      * @return mixed
-     * @since PHP 7.3.5
+     * @since 7.3.5
      */
     public static function setRange(string $string)
     {
@@ -173,7 +159,7 @@ class AppRangeGenerator
         }else{
 
             $string = strtoupper($string);
-            $salida = range($string,'Z');
+            $salida = range($string, 'Z');
 
         }
 
@@ -189,10 +175,10 @@ class AppRangeGenerator
      * @access public
      * @param array $array
      * @return bool
-     * @since PHP 7.3.5
+     * @since 7.3.5
      * @Trowable
      */
-    public static function checkRange(array $array)
+    public static function checkRange(array $array): bool
     {
         //
         
@@ -204,7 +190,7 @@ class AppRangeGenerator
 
         }
 
-        if ($array[0]["count"] >= 3 or $array[1]["count"] >= 3) {
+        if ($array[0]["count"] >= 4 or $array[1]["count"] >= 4) {
             
             throw new \Exception("Se alcanzo la Politica Prevencion de Ejecucion de Datos", 300);
             $salida = false;
